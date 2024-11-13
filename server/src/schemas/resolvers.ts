@@ -1,4 +1,4 @@
-import {User} from '../models/User.js';
+import User from '../models/User.js';
 import { signToken, AuthenticationError } from '../services/auth.js';
 
 interface User {
@@ -16,10 +16,6 @@ interface Book {
   title: string;
   image: string;
   link: string;
-}
-
-interface Userargs {
-    userId: string;
 }
 
 interface AddUserArgs {
@@ -52,15 +48,60 @@ interface Context {
 
 const resolvers = { 
     Query: {
-        me: async (_parent: any, _args: any, context: Context): <Promise>User | null> => {
+        me: async (_parent: any, _args: any, context: Context): Promise<User | null> => {
             if (context.user) {
                 return await User.findOne({_id:context.user._id});
             }
             throw AuthenticationError;
-        }
+        },
     },
     Mutation: {
+        login: async (_parent: any, {email, password}: {email: string, password: string}) => {
+            const user = await User.findOne({email});
+            if (!user) {
+                throw new AuthenticationError('Cound not authenticate user');
+            }
 
+            const correctPassword = await user.isCorrectPassword(password);
+            if (!correctPassword) {
+                throw new AuthenticationError('Cound not authenticate user');
+            }
+
+            const token = signToken(user.username, user.email, user._id);
+
+            return {token, user};
+        },
+
+        addUser: async (_parent: any, {input}: AddUserArgs) => {
+            const user = await User.create({...input});
+            const token = signToken(user.username, user.email, user._id);
+            return {token, user};
+        },
+
+        saveBook: async(_parent: any, {input}: AddBookArgs, context: Context): Promise<User | null> => {
+            if (context.user) {
+                const {bookId, authors, description, title, image, link} = input;
+                const book = {
+                    bookId, authors, description, title, image, link,
+                };
+                return await User.findOneAndUpdate(
+                    {_id: context.user._id},
+                    {$addToSet: {savedBooks: book}},
+                    {new: true, runValidators: true}
+                );
+            };
+            throw new AuthenticationError('No User in Context');
+        },
+        removeBook: async(_parent: any, {bookId}: RemoveBookArgs, context: Context): Promise<User | null> => {
+            if (context.user) {
+                return await User.findOneAndUpdate(
+                    {_id: context.user._id},
+                    {$pull: {savedBooks: {bookId: bookId}}},
+                    {new: true}
+                );
+            };
+            throw AuthenticationError;
+        },
     },
 }
 
