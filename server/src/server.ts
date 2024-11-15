@@ -8,7 +8,8 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
 import { authenticateToken } from './services/auth.js';
 import cors from 'cors';
-
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 const server = new ApolloServer({
   typeDefs,
   resolvers
@@ -20,7 +21,8 @@ const startApolloServer = async () => {
 
   const PORT = process.env.PORT || 3001;
   const app = express();
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 app.use(cors());
