@@ -19,7 +19,7 @@ const startApolloServer = async () => {
   await server.start();
   await db();
 
-  const PORT = process.env.PORT || 3001;
+  const PORT = process.env.PORT || 10000;
   const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
