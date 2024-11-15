@@ -7,6 +7,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
 import { authenticateToken } from './services/auth.js';
+import cors from 'cors';
 
 const server = new ApolloServer({
   typeDefs,
@@ -22,13 +23,15 @@ const startApolloServer = async () => {
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
-
+app.use(cors());
   app.use('/graphql', expressMiddleware(server as any,
     {
       context: authenticateToken as any
     }
   ));
-
+app.use(cors({
+    origin: 'http://localhost:3000' // Replace with your client URL
+}));
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
 

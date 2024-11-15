@@ -36,7 +36,7 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
       });
 
       if (data) {
-        const { token } = data?.login?.token;
+        const token = data?.login?.token;
       Auth.login(token);
       }
 

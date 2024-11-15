@@ -72,10 +72,23 @@ const resolvers = {
             return {token, user};
         },
 
-        addUser: async (_parent: any, {input}: AddUserArgs) => {
-            const user = await User.create({...input});
-            const token = signToken(user.username, user.email, user._id);
+        addUser: async (_parent: any, {input}: AddUserArgs): Promise<{token: string; user: User}> => {
+            try {
+            const newUser = await User.create({...input});
+            const token = signToken(newUser.username, newUser.email, newUser._id);
+            const user: User = {
+                _id: newUser._id as string,
+                username: newUser.username,
+                email: newUser.email,
+                bookCount: newUser.bookCount || 0,
+                savedBooks: newUser.savedBooks || []
+            };
             return {token, user};
+            }
+            catch (error) {
+                console.error("Error creating user:", error);
+                throw new Error("Failed to create user");
+            }
         },
 
         saveBook: async(_parent: any, {input}: AddBookArgs, context: Context): Promise<User | null> => {
