@@ -17,8 +17,6 @@
     "concurrently": "^8.2.0"
   },
   "dependencies": {
-    "@apollo/server": "^4.11.2",
-    "cors": "^2.8.5",
-    "graphql": "^16.9.0"
+    "cors": "^2.8.5"
   }
 }

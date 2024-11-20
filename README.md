@@ -9,15 +9,15 @@ This is a class challenge to convert a web application from using a RESTful API 
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Usage](#usage)
 - [Links](#links)
 
-## Installation<a id="installation"></a>
+## Usage<a id="usage"></a>
 
-Application can only be used locally on a device with a Mongo DB, using Node.JS, TypeScript. 
+<a href="https://book-search-engine-sc9n.onrender.com/">View the deployed site.</a>
 
 ## Links<a id="links"></a>
 
-Live Deployment - 
+Live Deployment - https://book-search-engine-sc9n.onrender.com/
 
 Github Repository - https://github.com/sketchyTK/Book-Search-Engine
